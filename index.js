@@ -37,6 +37,8 @@ app.post("/book", async (req, res) => {
           let image = bookdata.volumeInfo.imageLinks?.thumbnail
             ? bookdata.volumeInfo.imageLinks.thumbnail
             : books[6].volumeInfo.imageLinks.thumbnail;
+          let description =  ( bookdata.volumeInfo.description.length > 300)
+          ?  bookdata.volumeInfo.description.slice(0, 300) : bookdata.volumeInfo.description;
           let bookType = "poetry";
           let country = bookdata.saleInfo.country;
     
@@ -44,6 +46,7 @@ app.post("/book", async (req, res) => {
           //   title,
           //   author,
           //   image,
+          //   description,
           //   bookType,
           //   country
           // });

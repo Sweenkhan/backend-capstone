@@ -18,6 +18,10 @@ const bookSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    description: {
+        type: String,
+        required: true
+    },
     bookType:{
         type: String,
         required: true,
@@ -26,6 +30,7 @@ const bookSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+     
 })
 
  
