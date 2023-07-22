@@ -40,16 +40,16 @@ app.post("/book", async (req, res) => {
           let bookType = "poetry";
           let country = bookdata.saleInfo.country;
     
-          const newBooks = new book({
-            title,
-            author,
-            image,
-            bookType,
-            country
-          });
+          // const newBooks = new book({
+          //   title,
+          //   author,
+          //   image,
+          //   bookType,
+          //   country
+          // });
     
-          await newBooks.save();  
-          console.log("ho gya"); 
+          // await newBooks.save();  
+          // console.log("ho gya"); 
         }  
       }
       res.status(200).send("books available");
