@@ -34,6 +34,36 @@ app.post("/login", async (req, res) => {
   }
 });
 
+
+
+// app.post("/search", async(req, res) => {
+//      const regEx = new RegExp(req.body.name, "i");
+ 
+     
+//     await book.find({name:regEx}).then((result) => {
+//          res.status(200).json(result)
+//      }).catch((err) => {
+//       console.log(err)
+//      })
+
+// })
+
+
+
+app.post("/search", async (req, res) => {
+  try {
+    console.log(req.body.searchBook)
+    const regEx = new RegExp(req.body.searchBook, "i");
+    const result = await book.find({ title: regEx });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while searching." });
+  }
+});
+
+
+
+
 app.post("/register", async (req, res) => {
   const { name, email, phone, username, password } = req.body;
   const newUser = new user({
