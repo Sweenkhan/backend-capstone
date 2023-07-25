@@ -15,7 +15,19 @@ app.get("/", async (req, res) => {
   // res.status(200).sendFile(__dirname + "main.js")
 });
 
-  
+
+app.get("/book", async(req, res) => {
+  const result = await book.find({})
+
+  if(result){
+    res.status(200).json(result)
+  }else {
+    res.status(500).json("An error occurred while searching." );
+  }
+
+})  
+
+
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
