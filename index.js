@@ -15,8 +15,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.get("/", async (req, res) => {
   // res.status(200).sendFile(__dirname + "main.js")
 });
-
-
+ 
 app.get("/book", async(req, res) => {
   const result = await book.find({})
 
@@ -27,9 +26,7 @@ app.get("/book", async(req, res) => {
   }
 
 })  
-
-
-
+ 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
