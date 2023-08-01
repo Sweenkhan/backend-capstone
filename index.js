@@ -52,9 +52,11 @@ app.post("/search", async (req, res) => {
     const regEx = new RegExp(req.body.searchBook, "i");
     const result = await book.find({ title: regEx });
     res.status(200).json(result);
+
   } catch (error) {
     res.status(500).json({ error: "An error occurred while searching." });
   }
+  
 });
 
 
