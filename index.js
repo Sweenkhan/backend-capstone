@@ -73,7 +73,7 @@ app.post("/register", async (req, res) => {
   });
 
   await newUser.save();
-  res.status(200).end("Well Done");
+  res.status(200).send("success");
 });
 
 connection.then(() => {
