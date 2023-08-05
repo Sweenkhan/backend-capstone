@@ -60,8 +60,6 @@ app.post("/search", async (req, res) => {
 });
 
 
-
-
 app.post("/register", async (req, res) => {
   const { name, email, phone, username, password } = req.body;
   const newUser = new user({
