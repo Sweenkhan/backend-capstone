@@ -33,7 +33,6 @@ app.post("/book", async (req, res) => {
               bookType,
               country
             });
-      
             // await newBooks.save();  
             // console.log("ho gya"); 
             
