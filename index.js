@@ -3,8 +3,11 @@ import cors from "cors";
 import connection from "./db/connection.js";
 import user from "./models/user.js";
 import book from "./models/book.js";
-// import {jwt} from "jsonwebtoken"
-import { Admin } from "mongodb";
+import {jwt} from "jsonwebtoken"
+import { config } from "dotenv";
+// import { Admin } from "mongodb";
+
+config()
 
 const app = express();
 
@@ -70,9 +73,44 @@ app.post("/register", async (req, res) => {
     password,
   });
 
-  await newUser.save();
+  try{
+  const savedUser =  await newUser.save();
+  const token = jwt.sign({ userId: savedUser._id}, process.env.JWT_SECRET);
+
+  res.cookie("token", token, {httpOnly: true});
   res.status(200).send("success");
+  } catch(err){
+    console.log(err);
+    res.redirect("/register")
+  }
+   
 });
+
+
+app.get("/dashboard", (req, res) =>{
+      
+  const token = req.cookies.token;
+  if(!token){
+    res.redirect('/login')
+  }
+
+  try{
+    const decodeToken = jwt.verify(token , process.env.JWT_SECRET);
+    const userId = decodeToken.userId;
+
+    if(userId){ 
+      res.render("/dashboard")
+    } 
+    res.redirect("/login")
+  } catch(err){
+    console.log(err);
+    res.redirect("/login")
+  }
+
+
+})
+
+
 
 connection.then(() => {
   app.listen(8080, () => console.log("Server started at port 8080"));
