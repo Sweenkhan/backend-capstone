@@ -3,8 +3,9 @@ import cors from "cors";
 import connection from "./db/connection.js";
 import user from "./models/user.js";
 import book from "./models/book.js";
-import {jwt} from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 import { config } from "dotenv";
+import bcrypt from "bcrypt"
 // import { Admin } from "mongodb";
 
 config()
@@ -29,21 +30,32 @@ app.get("/book", async(req, res) => {
   }
 
 })  
- 
+
+
+
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  const userTryingToLogin = await user.findOne({ username });
+  try {
+    const userTryingToLogin = await user.findOne({ username });
 
-  if (user) {
-    if (password === userTryingToLogin.password) {
-      console.log("ho rha hai user check to");
-      res.status(200).send("success");
+    if (userTryingToLogin) {
+      const match = await bcrypt.compare(password, userTryingToLogin.password);
+
+      if (match) {
+        console.log("Password match");
+        res.status(200).send("success");
+      } else {
+        console.log("Password doesn't match!");
+        res.status(402).send("Invalid credentials");
+      }
     } else {
-      res.status(401).send("invalid credential");
+      console.log("User not found!");
+      res.status(401).send("Invalid credentials");
     }
-  } else {
-    res.status(401).send("invalid credential");
+  } catch (err) {
+    console.error("Error during login:", err);
+    res.status(500).send("Internal server error");
   }
 });
 
@@ -63,14 +75,18 @@ app.post("/search", async (req, res) => {
 });
 
 
+
 app.post("/register", async (req, res) => {
-  const { name, email, phone, username, password } = req.body;
+
+  const { name, email, phone, username, password } = req.body; 
+  const hashedpassword = await bcrypt.hash(password, 10);
+  
   const newUser = new user({
     name,
     email,
     phone,
     username,
-    password,
+    password: hashedpassword,
   });
 
   try{
