@@ -93,8 +93,9 @@ app.post("/register", async (req, res) => {
   const savedUser =  await newUser.save();
   const token = jwt.sign({ userId: savedUser._id}, process.env.JWT_SECRET);
 
-  res.cookie("token", token, {httpOnly: true});
-  res.status(200).send("success");
+  const savedToken = ("token", token);
+
+  res.status(200).send(savedToken);
   } catch(err){
     console.log(err);
     res.redirect("/register")
@@ -111,7 +112,7 @@ app.get("/dashboard", (req, res) =>{
   }
 
   try{
-    const decodeToken = jwt.verify(token , process.env.JWT_SECRET);
+    const decodeToken = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decodeToken.userId;
 
     if(userId){ 
@@ -121,9 +122,15 @@ app.get("/dashboard", (req, res) =>{
   } catch(err){
     console.log(err);
     res.redirect("/login")
-  }
+  } 
+
+})
 
 
+app.get("/logout", (req, res) =>{
+  console.log(req.cookies)
+  res.cookie("token", "", {maxAge: 1}); 
+  res.redirect("/")
 })
 
 
