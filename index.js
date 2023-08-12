@@ -74,6 +74,7 @@ app.post("/search", async (req, res) => {
   }
 });
 
+
 //-----------------------user register----------------------------------//
 app.post("/register", async (req, res) => {
   const { name, email, phone, username, password } = req.body;
@@ -94,7 +95,7 @@ app.post("/register", async (req, res) => {
 
     if (savedUser) {
       const newDashboard = new dashboard({
-        userId: savedUser._id,
+        userId: savedUser.name,
         likedBooks: 0,
         commentBooks: 0,
         completedReadBooks: 0,
@@ -112,6 +113,7 @@ app.post("/register", async (req, res) => {
   }
 });
 
+
 //-------------------------------dashboard-------------------//
 app.post("/dashboard", (req, res) => {
   const session = req.body.session;
@@ -121,9 +123,9 @@ app.post("/dashboard", (req, res) => {
 
   try {
     const decodeToken = jwt.verify(session, process.env.JWT_SECRET);
-    const userId = decodeToken.userId;
+    const userName = decodeToken.userName;
 
-    if (userId) {
+    if (userName) {
       res.status(200).send("success auth");
     } else {
       res.status(300).send("failed auther");
