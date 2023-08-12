@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const dashboardSchema = new mongoose.Schema({
-    userId:{
+    userName:{
         type: String,
         required: true,
         unique: true 
