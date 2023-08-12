@@ -95,7 +95,7 @@ app.post("/register", async (req, res) => {
 
     if (savedUser) {
       const newDashboard = new dashboard({
-        userId: savedUser.name,
+        userName: savedUser.name,
         likedBooks: 0,
         commentBooks: 0,
         completedReadBooks: 0,
@@ -135,6 +135,37 @@ app.post("/dashboard", (req, res) => {
     res.status(300).send("failed auther");
   }
 });
+
+
+
+app.post("/check", async(req, res) =>{
+  const session = req.body.session;
+
+  if (!session) {
+    res.status(401).send("failed auther");
+  }
+
+  try {
+    const decodeToken = jwt.verify(session, process.env.JWT_SECRET);
+    const userName = decodeToken.userName;
+
+    if (userName) {
+
+      const userDashboard = await dashboard.findOne({ userName})
+      console.log(userDashboard.userName);
+
+      res.status(200).send("success auth");
+    } else {
+      res.status(300).send("failed auther");
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(300).send("failed auther");
+  }
+})
+
+
+
 
 app.get("/logout", (req, res) => {
   console.log(req.cookies);
