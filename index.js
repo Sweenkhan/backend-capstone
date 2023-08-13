@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import dashboard from "./models/dashboard.js";
+import authentication from "./auth/authenticat.js";
 
 config();
 
@@ -30,6 +31,7 @@ app.get("/book", async (req, res) => {
     res.status(500).json("An error occurred while searching.");
   }
 });
+
 
 //-------------------------------------login user------------------------//
 app.post("/login", async (req, res) => {
@@ -95,7 +97,7 @@ app.post("/register", async (req, res) => {
 
     if (savedUser) {
       const newDashboard = new dashboard({
-        userName: savedUser.name,
+        username: savedUser.name,
         likedBooks: 0,
         commentBooks: 0,
         completedReadBooks: 0,
@@ -115,53 +117,34 @@ app.post("/register", async (req, res) => {
 
 
 //-------------------------------dashboard-------------------//
-app.post("/dashboard", (req, res) => {
-  const session = req.body.session;
-  if (!session) {
-    res.status(401).send("failed auther");
-  }
-
-  try {
-    const decodeToken = jwt.verify(session, process.env.JWT_SECRET);
-    const userName = decodeToken.userName;
-
-    if (userName) {
-      res.status(200).send("success auth");
-    } else {
-      res.status(300).send("failed auther");
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(300).send("failed auther");
-  }
+app.post("/dashboard",authentication, async(req, res) => {
+  
+  let username = req.authUsername
+  const userdata = await dashboard.findOne({ username})
+  console.log(userdata)
+  res.status(200).send("success auth");
 });
 
-
-
-app.post("/check", async(req, res) =>{
-  const session = req.body.session;
-
-  if (!session) {
-    res.status(401).send("failed auther");
-  }
-
-  try {
-    const decodeToken = jwt.verify(session, process.env.JWT_SECRET);
-    const userName = decodeToken.userName;
-
-    if (userName) {
-
-      const userDashboard = await dashboard.findOne({ userName})
-      console.log(userDashboard.userName);
+ 
+app.post("/check", authentication ,async(req, res) =>{
+ 
+      let username = req.authUsername
+      const userdata = await user.findOne({ username})
+      console.log(userdata) 
 
       res.status(200).send("success auth");
-    } else {
-      res.status(300).send("failed auther");
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(300).send("failed auther");
-  }
+})
+
+
+app.post('/likedBooks', authentication, async(req, res) =>{ 
+     let bookId = req.body.likedBook;
+
+     let username = req.authUsername
+      await dashboard.updateOne({ username},{likedBooks : {$push: [bookId] }})
+ 
+
+     console.log(bookId) 
+     res.status(200).send("succesfuly added books");
 })
 
 

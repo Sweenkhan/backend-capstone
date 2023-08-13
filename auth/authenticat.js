@@ -17,11 +17,9 @@ function authentication (req, res, next){
     const userName = decodeToken.userName;
 
     if (userName) {
-
-    //   const userDashboard = await dashboard.findOne({ userName})
-    //   console.log(userDashboard.userName);
-        
-          next() 
+ 
+        req.authUsername = userName;
+        next() 
     } else {
       res.status(300).send("failed auther");
     }
