@@ -125,6 +125,7 @@ app.post("/dashboard",authentication, async(req, res) => {
   res.status(200).send("success auth");
 });
 
+
  
 app.post("/check", authentication ,async(req, res) =>{
  
@@ -136,15 +137,21 @@ app.post("/check", authentication ,async(req, res) =>{
 })
 
 
-app.post('/likedBooks', authentication, async(req, res) =>{ 
-     let bookId = req.body.likedBook;
-
+app.patch('/liked', authentication, async(req, res) =>{ 
+     let bookId = req.body.likedBook; 
      let username = req.authUsername
-      await dashboard.updateOne({ username},{likedBooks : {$push: [bookId] }})
- 
 
-     console.log(bookId) 
-     res.status(200).send("succesfuly added books");
+     let filter = await dashboard.findOne({username});
+     let booksliked = filter.likedBooks;
+
+     if(booksliked.includes(bookId)){ 
+      res.status(200).send("You already liked this book")
+    } else{ 
+      let liked =  await dashboard.updateOne({ username},{$push :{likedBooks: bookId}})
+      res.status(200).send("succesfuly added books");
+     }
+  
+    //  console.log(booksliked.includes(bookId)); 
 })
 
 
