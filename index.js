@@ -15,11 +15,16 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "http://localhost:3000" }));
+// app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "https://bookshelf-8yfg.onrender.com" }));
+ 
+
+
 
 app.get("/", async (req, res) => {
   // res.status(200).sendFile(__dirname + "main.js")
 });
+
 
 //------------------------------all books-----------------------//
 app.get("/book", async (req, res) => {
@@ -31,7 +36,6 @@ app.get("/book", async (req, res) => {
     res.status(500).json("An error occurred while searching.");
   }
 });
-
 
 //-------------------------------------login user------------------------//
 app.post("/login", async (req, res) => {
@@ -63,7 +67,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
 //----------------------------search book---------------------------//
 app.post("/search", async (req, res) => {
   try {
@@ -75,7 +78,6 @@ app.post("/search", async (req, res) => {
     res.status(500).json({ error: "An error occurred while searching." });
   }
 });
-
 
 //-----------------------user register----------------------------------//
 app.post("/register", async (req, res) => {
@@ -92,8 +94,6 @@ app.post("/register", async (req, res) => {
 
   try {
     const savedUser = await newUser.save();
-    // const token = jwt.sign({ userId: savedUser._id}, process.env.JWT_SECRET);
-    // const savedToken = ("token", token);
 
     if (savedUser) {
       const newDashboard = new dashboard({
@@ -108,7 +108,6 @@ app.post("/register", async (req, res) => {
     }
 
     res.status(200).send("success register");
-
   } catch (err) {
     console.log(err);
     res.redirect("/register");
@@ -117,45 +116,49 @@ app.post("/register", async (req, res) => {
 
 
 //-------------------------------dashboard-------------------//
-app.post("/dashboard",authentication, async(req, res) => {
-  
-  let username = req.authUsername
-  const userdata = await dashboard.findOne({ username})
-  console.log(userdata)
+app.post("/dashboard", authentication, async (req, res) => {
+  let username = req.authUsername;
+  const userdata = await dashboard.findOne({ username });
+  // console.log(userdata)
   res.status(200).send("success auth");
 });
 
 
- 
-app.post("/check", authentication ,async(req, res) =>{
- 
-      let username = req.authUsername
-      const userdata = await user.findOne({ username})
-      console.log(userdata) 
+//  ---------------checkh------------------
+app.get("/check", authentication, async (req, res) => {
+  let username = req.authUsername;
+  const userdata = await user.findOne({ username });
+  console.log(userdata);
 
-      res.status(200).send("success auth");
-})
-
-
-app.patch('/liked', authentication, async(req, res) =>{ 
-     let bookId = req.body.likedBook; 
-     let username = req.authUsername
-
-     let filter = await dashboard.findOne({username});
-     let booksliked = filter.likedBooks;
-
-     if(booksliked.includes(bookId)){ 
-      res.status(200).send("You already liked this book")
-    } else{ 
-      let liked =  await dashboard.updateOne({ username},{$push :{likedBooks: bookId}})
-      res.status(200).send("succesfuly added books");
-     }
-  
-    //  console.log(booksliked.includes(bookId)); 
-})
+  res.status(200).send("success auth");
+});
 
 
+//  ---------------checkheader------------------
+app.get("/checkHeader", (req, res) => {
+  console.log(req.headers.authorization);
+  res.status(200).send("success auth");
+});
 
+app.patch("/liked", authentication, async (req, res) => {
+  let bookId = req.body.likedBook;
+  let username = req.authUsername;
+
+  let filter = await dashboard.findOne({ username });
+  let booksliked = filter.likedBooks;
+
+  if (booksliked.includes(bookId)) {
+    res.status(200).send("You already liked this book");
+  } else {
+    let liked = await dashboard.updateOne(
+      { username },
+      { $push: { likedBooks: bookId } }
+    );
+    res.status(200).send("succesfuly added books");
+  }
+
+  //  console.log(booksliked.includes(bookId));
+});
 
 app.get("/logout", (req, res) => {
   console.log(req.cookies);
