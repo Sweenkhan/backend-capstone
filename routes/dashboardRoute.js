@@ -1,33 +1,39 @@
-import { Router } from "express";
+import express from "express";
 import dashboard from "../models/dashboard.js";
 import user from "../models/user.js";
 import authentication from "../auth/authenticat.js";
+import book from "../models/book.js";
 
- const router = Router()
+const router = express.Router()
   
+ 
 //-------------------------------dashboard-------------------// 
-router.post("/dashboard", authentication, async (req, res) => {
+router.get("/dashboard", authentication, async (req, res) => {
     let username = req.authUsername;
     const userdata = await dashboard.findOne({ username });
     // console.log(userdata)
-    res.status(200).send("success auth");
+    res.status(200).send(userdata);
   });
  
 
-//  ---------------checkh------------------ 
-router.get("/check", authentication, async (req, res) => {
+//---------------------------LIKED BOOKS-----------------------//
+  router.patch("/liked", authentication, async (req, res) => {
+    let bookId = req.body.likedBook;
     let username = req.authUsername;
-    const userdata = await user.findOne({ username });
-    console.log(userdata);
   
-    res.status(200).send("success auth");
-  });
+    let filter = await dashboard.findOne({ username });
+    let booksliked = filter.likedBooks;
   
-
-//  ---------------checkheader------------------
-router.get("/checkHeader", (req, res) => {
-    console.log(req.headers.authorization);
-    res.status(200).send("success auth");
+    if (booksliked.includes(bookId)) {
+      res.status(200).send("You already liked this book");
+    } else {
+      let liked = await dashboard.updateOne(
+        { username },
+        { $push: { likedBooks: bookId } }
+      );
+      res.status(200).send("succesfuly added books");
+    }
+   
   });
 
 

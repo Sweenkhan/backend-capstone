@@ -1,9 +1,12 @@
 import user from "../models/user.js";
 import dashboard from "../models/dashboard.js";
+import jwt from "jsonwebtoken";
+import { config } from "dotenv";
+import bcrypt from "bcrypt";
 import { Router } from "express";
 
+config()
 const router =  Router()
-
 
 //-----------------------LOGIN----------------------//
 router.post("/login", async(req, res) => {
