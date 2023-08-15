@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 
-config();
+
+config(); 
 
 function authentication(req, res, next) {
   const session = req.body.session || req.headers.authorization;
