@@ -61,6 +61,7 @@ router.post("/login", async(req, res) => {
         const newDashboard = new dashboard({
           username: savedUser.name,
           likedBooks: 0,
+          ratingBooks: 0,
           commentBooks: 0,
           completedReadBooks: 0,
           comentedBooks: 0,
