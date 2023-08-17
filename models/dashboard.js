@@ -10,6 +10,10 @@ const dashboardSchema = new mongoose.Schema({
         type : Array, 
         unique: false,
     },
+    ratingBooks:{
+        type : Array, 
+        unique: false,
+    },
     completedReadBooks:{
         type: Array, 
         unique: false,
