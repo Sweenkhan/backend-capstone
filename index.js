@@ -22,7 +22,7 @@ app.get("/", async (req, res) => {
   // res.status(200).sendFile(__dirname + "main.js")
 });
 
- 
+  
 
 connection.then(() => {
   app.listen(8080, () => console.log("Server started at port 8080"));
