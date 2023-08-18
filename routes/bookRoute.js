@@ -114,5 +114,29 @@ router.patch("/liked", authentication, async (req, res) => {
 });
 
 
+//-------------------------------CURRENT READ---------------------------------
+
+router.patch("/currentRead", authentication, async(req, res) =>{
+    
+  const bookId = req.body.currentReadBook;
+  let username = req.authUsername;
+
+  let filter = await dashboard.findOne({ username });
+  let currentRead = filter.currentRead;
+
+  console.log(bookId, currentRead)
+  if(currentRead.includes(bookId)){ 
+      res.status(200).send("You already started book");
+    } else {
+      let current = await dashboard.updateOne(
+        { username },
+        { $push: { currentRead: bookId } }
+      );
+      res.status(200).send("succesfuly start read books");
+    } 
+
+})
+
+
 
 export default router;
