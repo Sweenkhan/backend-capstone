@@ -5,7 +5,8 @@ import dashboard from "../models/dashboard.js";
 
 const router = express.Router();
 
-//----------------------GET ALL BOOKS-----------------//
+
+//-----------------------------GET ALL BOOKS-------------------------------//
 router.get("/book", async (req, res) => {
   const result = await book.find({});
 
@@ -16,7 +17,8 @@ router.get("/book", async (req, res) => {
   }
 });
 
-//------------------SEARCH-BOOKS------------------//
+
+//------------------------------------SEARCH-BOOKS-----------------------------//
 router.post("/search", async (req, res) => {
   try {
     console.log(req.body.searchBook);
@@ -28,8 +30,8 @@ router.post("/search", async (req, res) => {
   }
 });
 
-//---------------RATING-BOOKS------------------//
 
+//-------------------------RATING-BOOKS---------------------------------// 
 router.patch("/rating", authentication, async (req, res) => {
   let bookid = req.body.ratingBook;
   let username = req.authUsername;
@@ -37,6 +39,7 @@ router.patch("/rating", authentication, async (req, res) => {
 
   let filter = await dashboard.findOne({ username });
   let ratingBooks = filter.ratingBooks;
+
 
   //CHECKING BOOK ALREADY HAS GIVEN RATING
   function ratedBooks() {
@@ -66,8 +69,8 @@ router.patch("/rating", authentication, async (req, res) => {
   }
 });
 
-//-----------------------------------COMPLETED BOOK-----------------------
 
+//-----------------------------------COMPLETED BOOK--------------------------// 
 router.patch("/completed", authentication, async (req, res) => {
   let bookid = req.body.completedBook;
   let username = req.authUsername;
@@ -87,5 +90,29 @@ router.patch("/completed", authentication, async (req, res) => {
     res.status(200).send("succesfuly completed read books");
   }
 });
+
+
+
+//------------------------------LIKED BOOKS-------------------------//
+router.patch("/liked", authentication, async (req, res) => {
+  let bookId = req.body.likedBook;
+  let username = req.authUsername;
+
+  let filter = await dashboard.findOne({ username });
+  let booksliked = filter.likedBooks;
+
+  if (booksliked.includes(bookId)) {
+    res.status(200).send("You already liked this book");
+  } else {
+    let liked = await dashboard.updateOne(
+      { username },
+      { $push: { likedBooks: bookId } }
+    );
+    res.status(200).send("succesfuly added books");
+  }
+ 
+});
+
+
 
 export default router;
