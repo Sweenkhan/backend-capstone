@@ -16,25 +16,22 @@ router.get("/dashboard", authentication, async (req, res) => {
   });
  
 
-//---------------------------LIKED BOOKS-----------------------//
-  router.patch("/liked", authentication, async (req, res) => {
-    let bookId = req.body.likedBook;
-    let username = req.authUsername;
+router.get("/getAllLikedBooks", authentication, async(req, res) =>{
+
+  let username = req.authUsername;
+  const filterUser = await dashboard.findOne({username})
+  let likedBooksIds = filterUser.likedBooks.slice(1)
   
-    let filter = await dashboard.findOne({ username });
-    let booksliked = filter.likedBooks;
+    
+  const collectData = await Promise.all(likedBooksIds.map(async (_id) => {
+    return await book.findOne({ _id });
+  }));
+ 
+  console.log(username, likedBooksIds)
   
-    if (booksliked.includes(bookId)) {
-      res.status(200).send("You already liked this book");
-    } else {
-      let liked = await dashboard.updateOne(
-        { username },
-        { $push: { likedBooks: bookId } }
-      );
-      res.status(200).send("succesfuly added books");
-    }
-   
-  });
+  res.status(200).send(collectData)
+
+}) 
 
 
 export default router;  
