@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 import bcrypt from "bcrypt";
 import { Router } from "express";
+import friendlist from "../models/friendlist.js";
+import authentication from "../auth/authenticat.js";
 
 config()
 const router =  Router()
@@ -68,6 +70,15 @@ router.post("/login", async(req, res) => {
           currentRead: 0,
         });
         await newDashboard.save();
+
+        const newList = new friendlist({
+          username: savedUser.name,
+          acceptRequest: 0,
+          sendRequest: 0,
+          friendList: 0
+        })
+    
+         await newList.save(); 
       }
   
       
@@ -80,8 +91,27 @@ router.post("/login", async(req, res) => {
   
 
 
+//--------------------------GET ALL USERS---------------------------//
+
+router.get("/allusers",authentication,  async(req, res) =>{
+ 
+    const getAllUsers = await user.find({}); 
+     res.status(200).send(getAllUsers);
+})
 
 
+//------------------------SEND REQUEST---------------------------// 
+router.patch("/frienRequest", authentication, async(req, res) =>{
+    
+  const friendUsername = req.body.friendUsername;
+  const username = req.authUsername;
+
+  const findUser = await  friendlist.findOne({username: friendUsername})
+ 
+  console.log(findUser);
+  res.status(200).send("everyThing is good");
+})
+ 
 
 
 
