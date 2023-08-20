@@ -69,13 +69,11 @@ router.get('/getAllRatedBooks', authentication, async(req, res) =>{
   let username = req.authUsername;
   const filterUser = await dashboard.findOne({username}); 
   let ratingBookIds = filterUser.ratingBooks.slice(1)
-
  
   let temp =  ratingBookIds.map((books) =>{
               return books.bookId
     }) 
-   
- 
+    
   const collectData = await Promise.all(temp.map(async(_id) =>{ 
     return await book.findOne({_id});
   }))
