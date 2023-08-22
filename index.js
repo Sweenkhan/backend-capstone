@@ -4,6 +4,7 @@ import connection from "./db/connection.js";
 import userRouter from "./routes/userRoute.js"; 
 import dashboardRouter from "./routes/dashboardRoute.js"
 import bookRouter from "./routes/bookRoute.js"
+import friendListRouter from "./routes/friendListRouter.js"
  
   
 
@@ -15,6 +16,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use(userRouter);
 app.use(dashboardRouter);
 app.use(bookRouter);
+app.use(friendListRouter)
 
 // app.use(cors({ origin: "https://bookshelf-8yfg.onrender.com" }));
 
