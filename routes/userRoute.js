@@ -91,6 +91,7 @@ router.post("/login", async(req, res) => {
   
 
 
+
 //--------------------------GET ALL USERS---------------------------//
 
 router.get("/allusers",authentication,  async(req, res) =>{
@@ -99,35 +100,15 @@ router.get("/allusers",authentication,  async(req, res) =>{
      res.status(200).send(getAllUsers);
 })
 
-
-//------------------------SEND REQUEST---------------------------// 
-router.patch("/frienRequest", authentication, async(req, res) =>{
-    
-  const friendUsername = req.body.friendUsername;
-  const username = req.authUsername;
-
-  const findUser = await  friendlist.findOne({username: friendUsername});
-  const pendingList = findUser.pendingRequest;
-
-  const gotRequest = await friendlist.updateOne(
-    {username: friendUsername},
-    {$push: {pendingRequest : username}}
-    )
-
-  console.log(gotRequest);
-  res.status(200).send("everyThing is good");
-})
-
-
-//---------------------------------GET ALL PENDING REQUEST------------------------------//
-router.get("/pendingRequests", authentication , async(req, res) =>{
+ 
+//--------------------------GET ORIGINAL USER-----------------------//
+router.get("/originalUser",authentication, async(req, res) =>{
   
   const username = req.authUsername;
-  const filter  = await friendlist.findOne({username})
+  const userData = await user.findOne({username})
 
-  const allPendingRequest = filter.pendingRequest; 
-  res.status(200).send(allPendingRequest);
-
+  console.log(userData)
+  res.status(200).send(userData)
 })
  
 

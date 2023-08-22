@@ -64,19 +64,40 @@ router.get("/getAllCompletedBooks", authentication, async(req, res) =>{
 })
 
 
-//---------------------------------GET ALL RATED BOOKS-------------------------------
+//---------------------------------GET ALL RATED BOOKS-------------------------------//
 router.get('/getAllRatedBooks', authentication, async(req, res) =>{
   let username = req.authUsername;
   const filterUser = await dashboard.findOne({username}); 
   let ratingBookIds = filterUser.ratingBooks.slice(1)
  
+  // taking all ids
   let temp =  ratingBookIds.map((books) =>{
               return books.bookId
     }) 
+
+
+  // take all rating  
+  let rate = ratingBookIds.map((book) =>{
+       return book.rating
+  })  
     
-  const collectData = await Promise.all(temp.map(async(_id) =>{ 
+
+  // all books rating data
+  const collectedData = await Promise.all(temp.map(async(_id) =>{ 
     return await book.findOne({_id});
-  }))
+  }));
+
+ // merging rating with data
+  const modifiedData = collectedData.map((bookData, i) => {
+    return {
+      ...bookData.toObject(), // Convert Mongoose document to plain object
+      rating: rate[i], // Assign the corresponding rating
+    };
+  });
+
+
+  const collectData = modifiedData;
+  console.log(collectData);
    
   res.status(200).send(collectData)
 })
