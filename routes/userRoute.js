@@ -72,9 +72,9 @@ router.post("/login", async(req, res) => {
         await newDashboard.save();
 
         const newList = new friendlist({
-          username: savedUser.name,
-          acceptRequest: 0,
+          username: savedUser.name, 
           sendRequest: 0,
+          pendingRequest: 0,
           friendList: 0
         })
     
@@ -106,10 +106,28 @@ router.patch("/frienRequest", authentication, async(req, res) =>{
   const friendUsername = req.body.friendUsername;
   const username = req.authUsername;
 
-  const findUser = await  friendlist.findOne({username: friendUsername})
- 
-  console.log(findUser);
+  const findUser = await  friendlist.findOne({username: friendUsername});
+  const pendingList = findUser.pendingRequest;
+
+  const gotRequest = await friendlist.updateOne(
+    {username: friendUsername},
+    {$push: {pendingRequest : username}}
+    )
+
+  console.log(gotRequest);
   res.status(200).send("everyThing is good");
+})
+
+
+//---------------------------------GET ALL PENDING REQUEST------------------------------//
+router.get("/pendingRequests", authentication , async(req, res) =>{
+  
+  const username = req.authUsername;
+  const filter  = await friendlist.findOne({username})
+
+  const allPendingRequest = filter.pendingRequest; 
+  res.status(200).send(allPendingRequest);
+
 })
  
 

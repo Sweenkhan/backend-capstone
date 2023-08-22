@@ -9,7 +9,7 @@ const friendListSchema = new mongoose.Schema({
         type: Array,
         unique: false,
     },
-    acceptRequest:{
+    pendingRequest:{
         type: Array,
         unique: false,
     },
