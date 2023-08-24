@@ -16,17 +16,20 @@ router.patch("/friendRequest", authentication, async(req, res) =>{
     const pendingList = findUser.pendingRequest;
   
     if(pendingList.includes(friendUsername)){ 
+ 
+      res.status(201).send("already you sen't request");
 
-      const gotRequest = await friendlist.updateOne(
-        {username: friendUsername},
-        {$push: {pendingRequest : username}}
-        )
-        res.status(200).send("everyThing is good");
       }else{
-        res.status(201).send("already you sen't request");
+        const gotRequest = await friendlist.updateOne(
+          {username: friendUsername},
+          {$push: {pendingRequest : username}}
+          )
+
+          
+          res.status(200).send("everyThing is good");
+          console.log(gotRequest);
       }
   
-    console.log(gotRequest);
   })
   
   
