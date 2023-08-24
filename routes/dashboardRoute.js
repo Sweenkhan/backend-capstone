@@ -34,8 +34,42 @@ router.get("/getAllLikedBooks", authentication, async(req, res) =>{
 }) 
 
 
-//------------------------------------GET ALL CURRENT READ BOOKS------------------------ 
+//----------------------------------GET ALL COMMENTED BOOKS----------------------------
+router.get("/getAllCommentedBooks", authentication, async(req, res) => {
+  let username = req.authUsername;
 
+  const filterUser = await dashboard.findOne({username})
+  let commentedBooks = filterUser.comentedBooks.slice(1)
+
+  // taking all ids
+  let temp =  commentedBooks.map((books) =>{
+    return books.bookId
+ }) 
+
+ // taking all comments
+ let coment = commentedBooks.map((book) =>{
+  return book.comment
+}) 
+
+const collectedData = await Promise.all(temp.map(async(_id) =>{ 
+  return await book.findOne({_id});
+}));
+
+
+// merging rating with data
+const modifiedData = collectedData.map((bookData, i) => {
+  return {
+    ...bookData.toObject(), // Convert Mongoose document to plain object
+    comment: coment[i], // Assign the corresponding rating
+  };
+});
+
+  console.log(temp, modifiedData)
+  res.status(200).send(modifiedData)
+})
+
+
+//------------------------------------GET ALL CURRENT READ BOOKS------------------------  
 router.get("/getAllReadBooks", authentication, async(req, res) =>{
      
   let username = req.authUsername;
