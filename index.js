@@ -14,14 +14,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // app.use(cors({ origin: "http://localhost:3000" }));
-// app.use(cors({ origin: "https://bookshelf-8yfg.onrender.com" }));
+app.use(cors({
+  "origin": "*",
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+  "preflightContinue": false,
+  "optionsSuccessStatus": 204
+ }));
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://bookshelf-8yfg.onrender.com');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'https://bookshelf-8yfg.onrender.com');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+//   next();
+// });
+
+ 
 
 app.use(userRouter);
 app.use(dashboardRouter);
