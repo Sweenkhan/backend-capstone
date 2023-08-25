@@ -15,8 +15,9 @@ function authentication(req, res, next) {
   try {
     console.log("reached here");
     const decodeToken = jwt.verify(session, process.env.JWT_SECRET);
+    console.log(decodeToken)
     const userName = decodeToken.userName;
-
+    
     if (userName) {
       req.authUsername = userName;
       next();
