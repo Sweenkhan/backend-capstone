@@ -24,12 +24,10 @@ router.post("/login", async(req, res) => {
           const token = jwt.sign({ userName: username }, process.env.JWT_SECRET, {expiresIn: "5m"});
           const savedToken = ("token", token);
   
-          console.log("Password match");
-          // res.status(200).send(savedtoken);
+          console.log("Password match"); 
           res.send({status:200, message: "Paaword match", savedToken: savedToken})
         } else {
-          console.log("Password doesn't match!");
-          // res.status(402).send("Invalid credentials");
+          console.log("Password doesn't match!"); 
           res.send({status:402, message: "Password doesm't match!"})
 
         }
@@ -88,8 +86,9 @@ router.post("/login", async(req, res) => {
       res.send({status:200, message: "successfully regsiter"})
 
     } catch (err) {
-      console.log(err);
-      res.redirect("/register");
+      res.send({status:201, message: "failed regsiteration"})
+
+      console.log(err); 
     }
   });
   

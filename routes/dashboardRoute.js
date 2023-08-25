@@ -11,8 +11,9 @@ const router = express.Router()
 router.get("/dashboard", authentication, async (req, res) => {
     let username = req.authUsername;
     const userdata = await dashboard.findOne({ username });
-    // console.log(userdata)
-    res.status(200).send(userdata);
+    
+    // res.status(200).send(userdata);
+    res.send({status:200, message: "got dashboardData", userdata: userdata}) 
   });
  
 
@@ -29,7 +30,9 @@ router.get("/getAllLikedBooks", authentication, async(req, res) =>{
  
   console.log(username, likedBooksIds)
   
-  res.status(200).send(collectData)
+  // res.status(200).send(collectData)
+  res.send({status:200, message: "got likedBookData", collectData: collectData}) 
+
 
 }) 
 
@@ -57,15 +60,17 @@ const collectedData = await Promise.all(temp.map(async(_id) =>{
 
 
 // merging rating with data
-const modifiedData = collectedData.map((bookData, i) => {
+const collectData = collectedData.map((bookData, i) => {
   return {
     ...bookData.toObject(), // Convert Mongoose document to plain object
     comment: coment[i], // Assign the corresponding rating
   };
 });
+ 
 
-  console.log(temp, modifiedData)
-  res.status(200).send(modifiedData)
+  console.log(temp,  collectData)
+  // res.status(200).send( collectData)
+  res.send({status:200, message: "got all commented BookData", collectData: collectData}) 
 })
 
 
@@ -80,7 +85,8 @@ router.get("/getAllReadBooks", authentication, async(req, res) =>{
     return await book.findOne({ _id });
   }))
  
-  res.status(200).send(collectData)
+  // res.status(200).send(collectData)
+  res.send({status:200, message: "got all current read BookData", collectData: collectData}) 
 });
 
 
@@ -94,7 +100,9 @@ router.get("/getAllCompletedBooks", authentication, async(req, res) =>{
   const collectData = await Promise.all(completedBookIds.map(async(_id) =>{
     return await book.findOne({ _id });
   }))
-  res.status(200).send(collectData);
+  
+  // res.status(200).send(collectData);
+  res.send({status:200, message: "got all complete read likedBookData", collectData: collectData}) 
 })
 
 
@@ -133,7 +141,8 @@ router.get('/getAllRatedBooks', authentication, async(req, res) =>{
   const collectData = modifiedData;
   console.log(collectData);
    
-  res.status(200).send(collectData)
+  // res.status(200).send(collectData)
+  res.send({status:200, message: "got all rated bookData", collectData: collectData}) 
 })
 
 
