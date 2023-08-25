@@ -5,7 +5,7 @@ import { config } from "dotenv";
 config(); 
 
 function authentication(req, res, next) {
-  const session = req.body.session || req.headers.authorization;
+  const session = req.body.session || req.header("authorization");
 
   if (!session) {
     // res.status(401).send("failed auther")
