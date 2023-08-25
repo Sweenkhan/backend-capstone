@@ -5,8 +5,9 @@ import userRouter from "./routes/userRoute.js";
 import dashboardRouter from "./routes/dashboardRoute.js"
 import bookRouter from "./routes/bookRoute.js"
 import friendListRouter from "./routes/friendListRouter.js"
+import { config } from "dotenv";
  
-  
+ config() 
 
 const app = express();
 
@@ -44,5 +45,5 @@ app.get("/", async (req, res) => {
   
 
 connection.then(() => {
-  app.listen(8080, () => console.log("Server started at port 8080"));
+  app.listen(process.env.PORT, () => console.log("Server started at port 8080"));
 });
