@@ -8,7 +8,7 @@ function authentication(req, res, next) {
   const session = req.body.session || req.headers.authorization;
 
   if (!session) {
-    // res.status(401).send("failed auther");
+    // res.status(401).send("failed auther")
     res.send({status:400, message: "Didn't get any SessionId"}) 
   }
 
