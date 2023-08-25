@@ -10,13 +10,14 @@ router.get("/book", async (req, res) => {
   const result = await book.find({});
 
   if (result) {
-    res.status(200).json(result);
-    // res.send({status:200, message: "Paaword match", savedToken: savedtoken})
+    // res.status(200).json(result);
+    res.send({status:200, message: "Paaword match", results: result})
 
   } else {
     res.status(500).json("An error occurred while searching.");
   }
 });
+
 
 //------------------------------------SEARCH-BOOKS-----------------------------//
 router.post("/search", async (req, res) => {
@@ -57,11 +58,17 @@ router.patch("/rating", authentication, async (req, res) => {
       { username },
       { $push: { ratingBooks: { bookId: bookid, rating: rated } } }
     );
-    res.status(200).send("succesfuly rated books");
+
+    // res.status(200).send("succesfuly rated books");
+    res.send({status:200, message: "succesfuly rated books"})
+
   } else {
-    res.status(200).send("You already gave rating to this book");
+
+    // res.status(200).send("You already gave rating to this book");
+    res.send({status: 200, message: "You already gave rating to this book"}) 
   }
 });
+
 
 //-----------------------------------COMPLETED BOOK--------------------------//
 router.patch("/completed", authentication, async (req, res) => {
@@ -72,8 +79,11 @@ router.patch("/completed", authentication, async (req, res) => {
   let completedReadBooks = filter.completedReadBooks;
 
   if (completedReadBooks.includes(bookid)) {
+
     console.log("kr diya tha");
-    res.status(200).send("You already gave rating to this book");
+    // res.status(200).send("You already gave rating to this book");
+    res.send({status: 200, message: "You already gave rating to this book"}) 
+
   } else {
     //delete current read from mongodb database
     let deleteCurrentRead = await dashboard.updateOne(
@@ -87,10 +97,13 @@ router.patch("/completed", authentication, async (req, res) => {
       { $push: { completedReadBooks: bookid } }
     );
 
+    // res.status(200).send("succesfuly completed read books");
     console.log("kr diya");
-    res.status(200).send("succesfuly completed read books");
+    res.send({status: 200, message: "succesfuly completed read books"}) 
+
   }
 });
+
 
 //------------------------------LIKED BOOKS-------------------------//
 router.patch("/liked", authentication, async (req, res) => {
@@ -101,13 +114,18 @@ router.patch("/liked", authentication, async (req, res) => {
   let booksliked = filter.likedBooks;
 
   if (booksliked.includes(bookId)) {
-    res.status(200).send("You already liked this book");
+
+    // res.status(200).send("You already liked this book");
+    res.send({status: 200, message: "You already liked this book"}) 
+
   } else {
     let liked = await dashboard.updateOne(
       { username },
       { $push: { likedBooks: bookId } }
     );
-    res.status(200).send("succesfuly added books");
+
+    // res.status(200).send("succesfuly added books");
+    res.send({status: 200, message: "succesfuly added books"}) 
   }
 });
 
@@ -140,9 +158,12 @@ router.patch("/comment", authentication, async(req, res) =>{
       { username },
       { $push: { comentedBooks: { bookId: bookid, comment: coment } } }
     );
-    res.status(200).send("succesfuly comment books");
+    // res.status(200).send("succesfuly comment books");
+    res.send({status: 200, message: "succesfuly comment books"}) 
+
   } else {
-    res.status(200).send("You already gave comment to this book");
+    // res.status(200).send("You already gave comment to this book");
+    res.send({status: 200, message: "You already gave comment to this book"})  
   }
 })
 
@@ -159,21 +180,32 @@ router.patch("/currentRead", authentication, async (req, res) => {
   console.log(bookId, currentRead);
 
   if (currentRead.includes(bookId)) {
-    res.status(200).send("You already started book");
+
+   // res.status(200).send("You already started book");
+    res.send({status: 200, message: "You already started book"})  
+
   } else {
     let completedReadBooks = filter.completedReadBooks;
 
     if (completedReadBooks.includes(bookId)) {
       console.log("kr diya tha");
-      res.status(200).send("You have already this book");
+
+      //res.status(200).send("You have already this book");
+    res.send({status: 200, message: "You have already this book"})  
+
     } else {
       let current = await dashboard.updateOne(
         { username },
         { $push: { currentRead: bookId } }
       );
-      res.status(200).send("succesfuly start reading this book");
+
+    //  res.status(200).send("succesfuly start reading this book");
+    res.send({status: 200, message: "succesfuly start reading this book"})  
+
     }
   }
 });
+
+
 
 export default router;

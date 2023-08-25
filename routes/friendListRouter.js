@@ -7,30 +7,30 @@ const router = express.Router()
 
 
 //------------------------SEND REQUEST---------------------------// 
-router.patch("/friendRequest", authentication, async(req, res) =>{
+// router.patch("/friendRequest", authentication, async(req, res) =>{
     
-    const friendUsername = req.body.friendUsername;
-    const username = req.authUsername;
+//     const friendUsername = req.body.friendUsername;
+//     const username = req.authUsername;
   
-    const findUser = await  friendlist.findOne({username: friendUsername});
-    const pendingList = findUser.pendingRequest;
+//     const findUser = await  friendlist.findOne({username: friendUsername});
+//     const pendingList = findUser.pendingRequest;
   
-    if(pendingList.includes(friendUsername)){ 
+//     if(pendingList.includes(friendUsername)){ 
  
-      res.status(201).send("already you sen't request");
+//       res.status(201).send("already you sen't request");
 
-      }else{
-        const gotRequest = await friendlist.updateOne(
-          {username: friendUsername},
-          {$push: {pendingRequest : username}}
-          )
+//       }else{
+//         const gotRequest = await friendlist.updateOne(
+//           {username: friendUsername},
+//           {$push: {pendingRequest : username}}
+//           )
 
           
-          res.status(200).send("everyThing is good");
-          console.log(gotRequest);
-      }
+//           res.status(200).send("everyThing is good");
+//           console.log(gotRequest);
+//       }
   
-  })
+//   })
   
   
   //---------------------------------GET ALL PENDING REQUEST------------------------------//
@@ -40,7 +40,8 @@ router.patch("/friendRequest", authentication, async(req, res) =>{
     const filter  = await friendlist.findOne({username})
   
     const allPendingRequest = filter.pendingRequest; 
-    res.status(200).send(allPendingRequest);
+    // res.status(200).send(allPendingRequest);
+    res.send({status: 200, message: "got all pending request", allPendingRequest: allPendingRequest})
   
   })
 

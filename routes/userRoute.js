@@ -96,11 +96,12 @@ router.post("/login", async(req, res) => {
 
 
 //--------------------------GET ALL USERS---------------------------//
-
 router.get("/allusers",authentication,  async(req, res) =>{
  
     const getAllUsers = await user.find({}); 
-     res.status(200).send(getAllUsers);
+    //  res.status(200).send(getAllUsers);
+  res.send({status:200, message: "orignalUser data", getAllUsers: getAllUsers})
+
 })
 
  
@@ -111,16 +112,13 @@ router.get("/originalUser",authentication, async(req, res) =>{
   const userData = await user.findOne({username})
 
   console.log(userData)
-  res.status(200).send(userData)
+  // res.status(200).send(userData)
+  res.send({status:200, message: "orignalUser data", userData: userData})
 })
  
 
 
-
-
-
-
-
+ 
 
 
 export default  router;
