@@ -22,11 +22,11 @@ router.post("/login", async(req, res) => {
   
         if (match) {
           const token = jwt.sign({ userName: username }, process.env.JWT_SECRET, {expiresIn: "5m"});
-          const savedtoken = ("token", token);
+          const savedToken = ("token", token);
   
           console.log("Password match");
           // res.status(200).send(savedtoken);
-          res.send({status:200, message: "Paaword match", savedToken: savedtoken})
+          res.send({status:200, message: "Paaword match", savedToken: savedToken})
         } else {
           console.log("Password doesn't match!");
           // res.status(402).send("Invalid credentials");
@@ -84,7 +84,9 @@ router.post("/login", async(req, res) => {
       }
   
       
-      res.status(200).send("success register");
+      // res.status(200).send("success register");
+      res.send({status:200, message: "successfully regsiter"})
+
     } catch (err) {
       console.log(err);
       res.redirect("/register");

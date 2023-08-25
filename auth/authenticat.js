@@ -21,6 +21,7 @@ function authentication(req, res, next) {
       next();
     } else {
       res.status(300).send("failed auther");
+      
     }
   } catch (err) {
     console.log(err);
