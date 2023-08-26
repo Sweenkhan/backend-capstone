@@ -12,8 +12,9 @@ router.get("/dashboard", authentication, async (req, res) => {
     let username = req.authUsername;
     const userdata = await dashboard.findOne({ username });
     
-    // res.status(200).send(userdata);
-    res.send({status:200, message: "got dashboardData", userdata: userdata}) 
+    
+    // userdata: userdata
+    res.send({status:200, message: "got dashboardData", userdata: userdata }) 
   });
  
 

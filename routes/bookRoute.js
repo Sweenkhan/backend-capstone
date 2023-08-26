@@ -82,7 +82,7 @@ router.patch("/completed", authentication, async (req, res) => {
 
     console.log("kr diya tha");
     // res.status(200).send("You already gave rating to this book");
-    res.send({status: 200, message: "You already gave rating to this book"}) 
+    res.send({status: 201, message: "You have already complete this book"}) 
 
   } else {
     //delete current read from mongodb database
@@ -116,7 +116,7 @@ router.patch("/liked", authentication, async (req, res) => {
   if (booksliked.includes(bookId)) {
 
     // res.status(200).send("You already liked this book");
-    res.send({status: 200, message: "You already liked this book"}) 
+    res.send({status: 201, message: "You already liked this book"}) 
 
   } else {
     let liked = await dashboard.updateOne(
@@ -125,7 +125,7 @@ router.patch("/liked", authentication, async (req, res) => {
     );
 
     // res.status(200).send("succesfuly added books");
-    res.send({status: 200, message: "succesfuly added books"}) 
+    res.send({status: 200, message: "succesfuly liked books"}) 
   }
 });
 
@@ -163,7 +163,7 @@ router.patch("/comment", authentication, async(req, res) =>{
 
   } else {
     // res.status(200).send("You already gave comment to this book");
-    res.send({status: 200, message: "You already gave comment to this book"})  
+    res.send({status: 201, message: "You already gave comment to this book"})  
   }
 })
 
@@ -182,7 +182,7 @@ router.patch("/currentRead", authentication, async (req, res) => {
   if (currentRead.includes(bookId)) {
 
    // res.status(200).send("You already started book");
-    res.send({status: 200, message: "You already started book"})  
+    res.send({status: 202, message: "You already start this book to read"})  
 
   } else {
     let completedReadBooks = filter.completedReadBooks;
@@ -191,7 +191,7 @@ router.patch("/currentRead", authentication, async (req, res) => {
       console.log("kr diya tha");
 
       //res.status(200).send("You have already this book");
-    res.send({status: 200, message: "You have already this book"})  
+    res.send({status: 201, message: "You have already read this book"})  
 
     } else {
       let current = await dashboard.updateOne(
