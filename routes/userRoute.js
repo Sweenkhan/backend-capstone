@@ -42,7 +42,7 @@ router.post("/login", async(req, res) => {
 
 
 
-//-----------------------------REGISTER-USER--------------------------//
+//-----------------------------REGISTER-USER-------------------------------------//
 
   router.post("/register", async (req, res) => {
     const { name, email, phone, username, password } = req.body;
@@ -81,8 +81,7 @@ router.post("/login", async(req, res) => {
          await newList.save(); 
       }
   
-      
-      // res.status(200).send("success register");
+       
       res.send({status:200, message: "successfully regsiter"})
 
     } catch (err) {
@@ -95,8 +94,8 @@ router.post("/login", async(req, res) => {
 
 
 
-//--------------------------GET ALL USERS---------------------------//
-router.get("/allusers",authentication,  async(req, res) =>{
+//--------------------------GET ALL USERS---------------------------///
+router.get("/allusers/:session", authentication,  async(req, res) =>{
  
     const getAllUsers = await user.find({}); 
     //  res.status(200).send(getAllUsers);
@@ -106,13 +105,12 @@ router.get("/allusers",authentication,  async(req, res) =>{
 
  
 //--------------------------GET ORIGINAL USER-----------------------//
-router.get("/originalUser",authentication, async(req, res) =>{
+router.get("/originalUser/:session" ,authentication, async(req, res) =>{
   
   const username = req.authUsername;
   const userData = await user.findOne({username})
 
-  console.log(userData)
-  // res.status(200).send(userData)
+  console.log(userData) 
   res.send({status:200, message: "orignalUser data", userData: userData})
 })
  

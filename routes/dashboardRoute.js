@@ -8,7 +8,7 @@ const router = express.Router()
   
  
 //-------------------------------dashboard-------------------// 
-router.get("/dashboard", authentication, async (req, res) => {
+router.get("/dashboard/:session", authentication, async (req, res) => {
     let username = req.authUsername;
     const userdata = await dashboard.findOne({ username });
     
@@ -18,8 +18,9 @@ router.get("/dashboard", authentication, async (req, res) => {
   });
  
 
+
  //-----------------------------ALL LIKED BOOKS------------------------// 
-router.get("/getAllLikedBooks", authentication, async(req, res) =>{
+router.get("/getAllLikedBooks/:session", authentication, async(req, res) =>{
 
   let username = req.authUsername;
   const filterUser = await dashboard.findOne({username})
@@ -29,9 +30,7 @@ router.get("/getAllLikedBooks", authentication, async(req, res) =>{
     return await book.findOne({ _id });
   }));
  
-  console.log(username, likedBooksIds)
-  
-  // res.status(200).send(collectData)
+  console.log(username, likedBooksIds) 
   res.send({status:200, message: "got likedBookData", collectData: collectData}) 
 
 
@@ -39,7 +38,7 @@ router.get("/getAllLikedBooks", authentication, async(req, res) =>{
 
 
 //----------------------------------GET ALL COMMENTED BOOKS----------------------------
-router.get("/getAllCommentedBooks", authentication, async(req, res) => {
+router.get("/getAllCommentedBooks/:session", authentication, async(req, res) => {
   let username = req.authUsername;
 
   const filterUser = await dashboard.findOne({username})
@@ -69,14 +68,13 @@ const collectData = collectedData.map((bookData, i) => {
 });
  
 
-  console.log(temp,  collectData)
-  // res.status(200).send( collectData)
+  console.log(temp,  collectData) 
   res.send({status:200, message: "got all commented BookData", collectData: collectData}) 
 })
 
 
 //------------------------------------GET ALL CURRENT READ BOOKS------------------------  
-router.get("/getAllReadBooks", authentication, async(req, res) =>{
+router.get("/getAllReadBooks/:session", authentication, async(req, res) =>{
      
   let username = req.authUsername;
   const filterUser = await dashboard.findOne({username})
@@ -85,14 +83,13 @@ router.get("/getAllReadBooks", authentication, async(req, res) =>{
   const collectData = await Promise.all(currentReadIds.map(async(_id) =>{
     return await book.findOne({ _id });
   }))
- 
-  // res.status(200).send(collectData)
+  
   res.send({status:200, message: "got all current read BookData", collectData: collectData}) 
 });
 
 
 //-----------------------------GET ALL COMPLETED READ BOOKS---------------------------- 
-router.get("/getAllCompletedBooks", authentication, async(req, res) =>{
+router.get("/getAllCompletedBooks/:session", authentication, async(req, res) =>{
 
   let username = req.authUsername;
   const filterUser = await dashboard.findOne({username}); 
@@ -101,14 +98,13 @@ router.get("/getAllCompletedBooks", authentication, async(req, res) =>{
   const collectData = await Promise.all(completedBookIds.map(async(_id) =>{
     return await book.findOne({ _id });
   }))
-  
-  // res.status(200).send(collectData);
+   
   res.send({status:200, message: "got all complete read likedBookData", collectData: collectData}) 
 })
 
 
 //---------------------------------GET ALL RATED BOOKS-------------------------------//
-router.get('/getAllRatedBooks', authentication, async(req, res) =>{
+router.get('/getAllRatedBooks/:session', authentication, async(req, res) =>{
   let username = req.authUsername;
   const filterUser = await dashboard.findOne({username}); 
   let ratingBookIds = filterUser.ratingBooks.slice(1)
@@ -141,8 +137,7 @@ router.get('/getAllRatedBooks', authentication, async(req, res) =>{
 
   const collectData = modifiedData;
   console.log(collectData);
-   
-  // res.status(200).send(collectData)
+    
   res.send({status:200, message: "got all rated bookData", collectData: collectData}) 
 })
 

@@ -7,7 +7,7 @@ const router = express.Router()
 
 
 //------------------------SEND REQUEST---------------------------// 
-// router.patch("/friendRequest", authentication, async(req, res) =>{
+// router.patch("/friendRequest/:session", authentication, async(req, res) =>{
     
 //     const friendUsername = req.body.friendUsername;
 //     const username = req.authUsername;
@@ -34,13 +34,12 @@ const router = express.Router()
   
   
   //---------------------------------GET ALL PENDING REQUEST------------------------------//
-  router.get("/pendingRequests", authentication , async(req, res) =>{
+  router.get("/pendingRequests/:session", authentication , async(req, res) =>{
     
     const username = req.authUsername;
     const filter  = await friendlist.findOne({username})
   
-    const allPendingRequest = filter.pendingRequest; 
-    // res.status(200).send(allPendingRequest);
+    const allPendingRequest = filter.pendingRequest;  
     res.send({status: 200, message: "got all pending request", allPendingRequest: allPendingRequest})
   
   })

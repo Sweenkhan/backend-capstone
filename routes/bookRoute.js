@@ -9,8 +9,7 @@ const router = express.Router();
 router.get("/book", async (req, res) => {
   const result = await book.find({});
 
-  if (result) {
-    // res.status(200).json(result);
+  if (result) { 
     res.send({status:200, message: "Paaword match", results: result})
 
   } else {
@@ -18,22 +17,104 @@ router.get("/book", async (req, res) => {
   }
 });
 
+ 
+//------------------------------LIKED BOOKS-------------------------//
+router.patch("/liked/:session", authentication, async (req, res) => {
+  let bookId = req.body.likedBook;
+  let username = req.authUsername;
 
-//------------------------------------SEARCH-BOOKS-----------------------------//
-router.post("/search", async (req, res) => {
-  try {
-    console.log(req.body.searchBook);
-    const regEx = new RegExp(req.body.searchBook, "i");
-    const result = await book.find({ title: regEx });
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred while searching." });
+  let filter = await dashboard.findOne({ username });
+  let booksliked = filter.likedBooks;
+
+  if (booksliked.includes(bookId)) {
+ 
+    res.send({status: 201, message: "You already liked this book"}) 
+
+  } else {
+    let liked = await dashboard.updateOne(
+      { username },
+      { $push: { likedBooks: bookId } }
+    );
+ 
+    res.send({status: 200, message: "succesfuly liked books"}) 
   }
 });
 
 
+//---------------------------COMMENT BOOKS-----------------------------// 
+router.patch("/comment/:session", authentication, async(req, res) =>{
+  let bookid = req.body.commentedBook;
+  let coment = req.body.comment
+  let username = req.authUsername;
+
+  console.log(coment, bookid, username)
+
+  let filter = await dashboard.findOne({ username });
+  let commentedBooks = filter.comentedBooks;
+ 
+  let checkingBooks = commentedBooks.filter((book) => {
+    let exist = false;
+    if (book.bookId === bookid) {
+      exist = true;
+    } else {
+      exist = false;
+    }
+    return exist;
+  });
+
+  
+  if (checkingBooks.length === 0) {
+    await dashboard.updateOne(
+      { username },
+      { $push: { comentedBooks: { bookId: bookid, comment: coment } } }
+    ); 
+    res.send({status: 200, message: "succesfuly comment books"}) 
+
+  } else { 
+    res.send({status: 201, message: "You already gave comment to this book"})  
+  }
+})
+
+
+
+//-------------------------------CURRENT READ---------------------------------
+router.patch("/currentRead/:session", authentication, async (req, res) => {
+  const bookId = req.body.currentReadBook;
+  let username = req.authUsername;
+
+  let filter = await dashboard.findOne({ username });
+  let currentRead = filter.currentRead;
+
+  console.log(bookId, currentRead);
+
+  if (currentRead.includes(bookId)) {
+ 
+    res.send({status: 202, message: "You already start this book to read"})  
+
+  } else {
+    let completedReadBooks = filter.completedReadBooks;
+
+    if (completedReadBooks.includes(bookId)) {
+      console.log("kr diya tha");
+ 
+    res.send({status: 201, message: "You have already read this book"})  
+
+    } else {
+      let current = await dashboard.updateOne(
+        { username },
+        { $push: { currentRead: bookId } }
+      );
+ 
+    res.send({status: 200, message: "succesfuly start reading this book"})  
+
+    }
+  }
+});
+
+
+
 //-------------------------RATING-BOOKS---------------------------------//
-router.patch("/rating", authentication, async (req, res) => {
+router.patch("/rating/:session", authentication, async (req, res) => {
   let bookid = req.body.ratingBook;
   let username = req.authUsername;
   let rated = req.body.rating;
@@ -58,20 +139,18 @@ router.patch("/rating", authentication, async (req, res) => {
       { username },
       { $push: { ratingBooks: { bookId: bookid, rating: rated } } }
     );
-
-    // res.status(200).send("succesfuly rated books");
+ 
     res.send({status:200, message: "succesfuly rated books"})
 
   } else {
-
-    // res.status(200).send("You already gave rating to this book");
+ 
     res.send({status: 200, message: "You already gave rating to this book"}) 
   }
 });
 
 
 //-----------------------------------COMPLETED BOOK--------------------------//
-router.patch("/completed", authentication, async (req, res) => {
+router.patch("/completed/:session", authentication, async (req, res) => {
   let bookid = req.body.completedBook;
   let username = req.authUsername;
 
@@ -80,8 +159,7 @@ router.patch("/completed", authentication, async (req, res) => {
 
   if (completedReadBooks.includes(bookid)) {
 
-    console.log("kr diya tha");
-    // res.status(200).send("You already gave rating to this book");
+    console.log("kr diya tha"); 
     res.send({status: 201, message: "You have already complete this book"}) 
 
   } else {
@@ -105,106 +183,20 @@ router.patch("/completed", authentication, async (req, res) => {
 });
 
 
-//------------------------------LIKED BOOKS-------------------------//
-router.patch("/liked", authentication, async (req, res) => {
-  let bookId = req.body.likedBook;
-  let username = req.authUsername;
+ 
 
-  let filter = await dashboard.findOne({ username });
-  let booksliked = filter.likedBooks;
-
-  if (booksliked.includes(bookId)) {
-
-    // res.status(200).send("You already liked this book");
-    res.send({status: 201, message: "You already liked this book"}) 
-
-  } else {
-    let liked = await dashboard.updateOne(
-      { username },
-      { $push: { likedBooks: bookId } }
-    );
-
-    // res.status(200).send("succesfuly added books");
-    res.send({status: 200, message: "succesfuly liked books"}) 
+//------------------------------------SEARCH-BOOKS-----------------------------//
+router.post("/search", async (req, res) => {
+  try {
+    console.log(req.body.searchBook);
+    const regEx = new RegExp(req.body.searchBook, "i");
+    const result = await book.find({ title: regEx });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while searching." });
   }
 });
 
-
-//---------------------------COMMENT BOOKS-----------------------------// 
-router.patch("/comment", authentication, async(req, res) =>{
-  let bookid = req.body.commentedBook;
-  let coment = req.body.comment
-  let username = req.authUsername;
-
-  console.log(coment, bookid, username)
-
-  let filter = await dashboard.findOne({ username });
-  let commentedBooks = filter.comentedBooks;
-
-  //CHECKING BOOK ALREADY HAS GIVEN RATING
-  let checkingBooks = commentedBooks.filter((book) => {
-    let exist = false;
-    if (book.bookId === bookid) {
-      exist = true;
-    } else {
-      exist = false;
-    }
-    return exist;
-  });
-
-  
-  if (checkingBooks.length === 0) {
-    await dashboard.updateOne(
-      { username },
-      { $push: { comentedBooks: { bookId: bookid, comment: coment } } }
-    );
-    // res.status(200).send("succesfuly comment books");
-    res.send({status: 200, message: "succesfuly comment books"}) 
-
-  } else {
-    // res.status(200).send("You already gave comment to this book");
-    res.send({status: 201, message: "You already gave comment to this book"})  
-  }
-})
-
-
-
-//-------------------------------CURRENT READ---------------------------------
-router.patch("/currentRead", authentication, async (req, res) => {
-  const bookId = req.body.currentReadBook;
-  let username = req.authUsername;
-
-  let filter = await dashboard.findOne({ username });
-  let currentRead = filter.currentRead;
-
-  console.log(bookId, currentRead);
-
-  if (currentRead.includes(bookId)) {
-
-   // res.status(200).send("You already started book");
-    res.send({status: 202, message: "You already start this book to read"})  
-
-  } else {
-    let completedReadBooks = filter.completedReadBooks;
-
-    if (completedReadBooks.includes(bookId)) {
-      console.log("kr diya tha");
-
-      //res.status(200).send("You have already this book");
-    res.send({status: 201, message: "You have already read this book"})  
-
-    } else {
-      let current = await dashboard.updateOne(
-        { username },
-        { $push: { currentRead: bookId } }
-      );
-
-    //  res.status(200).send("succesfuly start reading this book");
-    res.send({status: 200, message: "succesfuly start reading this book"})  
-
-    }
-  }
-});
 
 
 
