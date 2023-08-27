@@ -5,10 +5,10 @@ import { config } from "dotenv";
 config(); 
 
 function authentication(req, res, next) {
-  const session = req.body.session || req.header("authorization");
-
-  console.log(session)
-  // next();
+  const session = req.params.session;
+  // req.header("authorization") 
+     
+ console.log(req.params.session)
   if (!session) { 
     res.send({status:400, message: "Didn't get any SessionId"}) 
   }
