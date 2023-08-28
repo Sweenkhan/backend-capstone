@@ -61,7 +61,7 @@ router.post("/login", async(req, res) => {
   
       if (savedUser) {
         const newDashboard = new dashboard({
-          username: savedUser.name,
+          username: savedUser.username,
           likedBooks: 0,
           ratingBooks: 0,
           commentBooks: 0,
@@ -72,7 +72,7 @@ router.post("/login", async(req, res) => {
         await newDashboard.save();
 
         const newList = new friendlist({
-          username: savedUser.name, 
+          username: savedUser.username, 
           sendRequest: 0,
           pendingRequest: 0,
           friendList: 0

@@ -9,10 +9,11 @@ const router = express.Router()
  
 //-------------------------------dashboard-------------------// 
 router.get("/dashboard/:session", authentication, async (req, res) => {
+
     let username = req.authUsername;
     const userdata = await dashboard.findOne({ username });
     
-    
+    console.log(userdata)
     // userdata: userdata
     res.send({status:200, message: "got dashboardData", userdata: userdata }) 
   });
@@ -73,7 +74,7 @@ const collectData = collectedData.map((bookData, i) => {
 })
 
 
-//------------------------------------GET ALL CURRENT READ BOOKS------------------------  
+//------------------------------------GET ALL CURRENT READ BOOKS---------------------------------------------  
 router.get("/getAllReadBooks/:session", authentication, async(req, res) =>{
      
   let username = req.authUsername;
