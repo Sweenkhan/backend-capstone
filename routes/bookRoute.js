@@ -174,9 +174,8 @@ router.patch("/completed/:session", authentication, async (req, res) => {
       { username },
       { $push: { completedReadBooks: bookid } }
     );
-
-    // res.status(200).send("succesfuly completed read books");
-    console.log("kr diya");
+ 
+    console.log("successfull");
     res.send({status: 200, message: "succesfuly completed read books"}) 
 
   }
