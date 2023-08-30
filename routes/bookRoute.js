@@ -189,14 +189,27 @@ router.post("/search", async (req, res) => {
   try {
     console.log(req.body.searchBook);
     const regEx = new RegExp(req.body.searchBook, "i");
-    const result = await book.find({ title: regEx });
-    res.status(200).json(result);
+    const results = await book.find({ title: regEx });
+    
+    res.send({status: 200, message: "Got all books searched books.", results:results}) 
   } catch (error) {
-    res.status(500).json({ error: "An error occurred while searching." });
+    res.send({status: 500, message: "Book not found!"})
   }
 });
 
 
+//------------------------------------SEARCH-BOOKS BY TYPE------------------------//
+router.post("/searchBookByType", async(req, res)=>{ 
+
+  try{
+    const bookType = req.body.bookType 
+    const results = await book.find({bookType})  
+    res.send({status: 200, message: "Got all books searched by type.", results:results}) 
+  }catch{
+    res.send({status: 500, message: "Book not found!"})
+  }
+  
+}) 
 
 
 export default router;
