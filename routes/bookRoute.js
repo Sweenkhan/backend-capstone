@@ -27,8 +27,13 @@ router.patch("/liked/:session", authentication, async (req, res) => {
   let booksliked = filter.likedBooks;
 
   if (booksliked.includes(bookId)) {
+
+    let unlike = await dashboard.updateOne(
+      { username },
+      { $pull: { likedBooks: bookId } }
+    );
  
-    res.send({status: 201, message: "You already liked this book"}) 
+    res.send({status: 201, message: "Remove from like  book"}) 
 
   } else {
     let liked = await dashboard.updateOne(
