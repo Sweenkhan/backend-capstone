@@ -9,9 +9,11 @@ import authentication from "../auth/authenticat.js";
 
 config()
 const router =  Router()
+let updatePassword;
 
 //-----------------------LOGIN----------------------//
 router.post("/login", async(req, res) => {
+    updatePassword = req.body.password;
     const { username, password } = req.body;
   
     try {
@@ -108,13 +110,47 @@ router.get("/allusers/:session", authentication,  async(req, res) =>{
 router.get("/originalUser/:session" ,authentication, async(req, res) =>{
   
   const username = req.authUsername;
-  const userData = await user.findOne({username})
+  const userdata = await user.findOne({username})
 
-  console.log(userData) 
+  const userData = {...userdata.toObject(), originalPassword :  updatePassword}
+  console.log(userData)
+  // console.log(updatePassword) 
   res.send({status:200, message: "orignalUser data", userData: userData})
 })
  
 
+//-------------------------UPDATE USER PROFILE----------------------//
+router.put("/editUserProfile/:session", authentication, async(req, res) => {
+
+  try{
+
+    let username = req.authUsername;
+    
+    let name = req.body.name;
+    let phone = req.body.phone;
+    let email = req.body.email;
+    let simplePassword = req.body.password;
+    
+    let password = await bcrypt.hash(simplePassword, 10)
+    
+    
+    
+    let updatedUser = await user.updateOne({username}, {$set : {username, name, email, phone, password}})
+    
+    if (updatedUser.modifiedCount === 1) {
+      res.status(200).json({ message: "User profile updated" });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    } 
+  }
+
+  catch {
+
+    res.send({status:401, message: "user not fount"})
+  }
+
+
+})
 
  
 
