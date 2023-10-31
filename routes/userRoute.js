@@ -8,12 +8,10 @@ import friendlist from "../models/friendlist.js";
 import authentication from "../auth/authenticat.js";
 
 config()
-const router =  Router()
-let updatePassword;
-
+const router =  Router() 
 //-----------------------LOGIN----------------------//
-router.post("/login", async(req, res) => {
-    updatePassword = req.body.password;
+router.post("/login", async(req, res) => { 
+
     const { username, password } = req.body;
   
     try {
@@ -112,12 +110,13 @@ router.get("/originalUser/:session" ,authentication, async(req, res) =>{
   const username = req.authUsername;
   const userdata = await user.findOne({username})
 
-  const userData = {...userdata.toObject(), originalPassword :  updatePassword}
-  console.log(userData)
+  // const userData = {...userdata.toObject(), originalPassword :  updatePassword}
+  // console.log(userData)
   // console.log(updatePassword) 
-  res.send({status:200, message: "orignalUser data", userData: userData})
+  res.send({status:200, message: "orignalUser data", userData: userdata})
 })
  
+
 
 //-------------------------UPDATE USER PROFILE----------------------//
 router.put("/editUserProfile/:session", authentication, async(req, res) => {
@@ -150,6 +149,32 @@ router.put("/editUserProfile/:session", authentication, async(req, res) => {
   }
 
 
+})
+
+
+
+//-------------------------------CHECKING OLD PASSWORD------------------------
+
+router.post("/checkOldPassword/:session", authentication, async(req, res)=> {
+ 
+  const username = req.authUsername;
+  const password = req.body.password; 
+
+    const userTryingChangePassword = await user.findOne({username})
+ 
+    if(userTryingChangePassword){
+      const match = await bcrypt.compare(password, userTryingChangePassword.password)
+      console.log(match)
+      if(match) {
+        res.send({status:200, message: "password match", password})
+      } else {
+        res.send({status:201, message: "Wrong password"})
+
+      }
+    }  else {
+      res.send({status:202, message: "Wrong password"})
+    }
+ 
 })
 
  
