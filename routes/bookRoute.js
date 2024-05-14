@@ -186,9 +186,6 @@ router.patch("/completed/:session", authentication, async (req, res) => {
   }
 });
 
-
- 
-
 //------------------------------------SEARCH-BOOKS-----------------------------//
 router.post("/search", async (req, res) => {
   try {
