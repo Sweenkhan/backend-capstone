@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { config } from "dotenv";
 
-
 config(); 
 
 function authentication(req, res, next) {
